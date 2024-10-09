@@ -1,8 +1,13 @@
 import React from "react";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
-import { Select, SelectContent, SelectItem, SelectValue } from "../ui/select";
-import { SelectTrigger } from "@radix-ui/react-select";
+import {
+  SelectTrigger,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectValue,
+} from "../ui/select";
 import { Button } from "../ui/button";
 import { Textarea } from "../ui/textarea";
 
@@ -22,7 +27,7 @@ const CommonForm = ({
         element = (
           <Input
             name={getControlItem.name}
-            placeholder={getControlItem.placeholder}
+            placeholder={getControlItem.label}
             id={getControlItem.name}
             type={getControlItem.type}
             value={value}
@@ -38,12 +43,17 @@ const CommonForm = ({
 
       case "select":
         element = (
-          <Select onChannge={(value) => setFormData({
-            ...formData,
-            [getControlItem.name] : value 
-          })} value={value}>
+          <Select
+            onValueChange={(value) =>
+              setFormData({
+                ...formData,
+                [getControlItem.name]: value,
+              })
+            }
+            value={value}
+          >
             <SelectTrigger className="w-full">
-              <SelectValue placeholder={getControlItem.placeholder} />
+              <SelectValue placeholder={getControlItem.label} />
             </SelectTrigger>
             <SelectContent>
               {getControlItem.options && getControlItem.options.length > 0
