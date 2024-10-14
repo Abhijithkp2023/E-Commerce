@@ -15,4 +15,4 @@ router.get('/check-auth', authMiddleware, (req,res) => {
     })
 })
 
-export default router;
+export default router;
