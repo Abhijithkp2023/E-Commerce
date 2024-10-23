@@ -10,7 +10,6 @@ const initialState = {
 export const registerUser = createAsyncThunk(
   "/auth/register",
   async (formData) => {
-    console.log("backend call");
     const response = await axios.post(
       "http://localhost:5000/api/auth/register",
       formData,
@@ -56,17 +55,14 @@ const authSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(registerUser.pending, (state) => {
-        console.log("pending");
         state.isLoading = true;
       })
       .addCase(registerUser.fulfilled, (state, action) => {
-        console.log("fullfilled");
         state.isLoading = false;
         state.user = null;
         state.isAuthenticated = false;
       })
       .addCase(registerUser.rejected, (state, action) => {
-        console.log("rejected");
         state.isLoading = false;
         state.user = null;
         state.isAuthenticated = false;
@@ -88,7 +84,6 @@ const authSlice = createSlice({
         state.isLoading = true;
       })
       .addCase(checkAuth.fulfilled, (state, action) => {
-        console.log(action);
         state.isLoading = false;
         state.user = action.payload.success ? action.payload.user : null;
         state.isAuthenticated = action.payload.success;

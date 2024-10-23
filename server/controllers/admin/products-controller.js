@@ -66,12 +66,12 @@ const addProduct = async (req, res) => {
 const fetchAllProducts = async (req, res) => {
   try {
     const listOfProducts = await Product.find({});
-    res.status(201).json({
+    res.status(200).json({
       success: true,
       data: listOfProducts,
     });
   } catch (error) {
-    console.log(e);
+    console.log(error);
     res.status(500).json({
       success: false,
       message: "Error occured",
@@ -95,28 +95,30 @@ const editProduct = async (req, res) => {
       totalStock,
     } = req.body;
 
+    console.log(req.body);
+
     const findProduct = await Product.findById(id);
+    console.log(findProduct, "find product");
     if (!findProduct)
       return res.status(404).json({
         success: false,
         message: "Product not Found",
       });
 
-    Product.title = title || findProduct.title;
-    Product.description = description || findProduct.description;
-    Product.category = category || findProduct.category;
-    Product.brand = brand || findProduct.brand;
-    Product.price = price || findProduct.price;
-    Product.salePrice = salePrice || findProduct.salePrice;
-    Product.totalStock = totalStock || findProduct.totalStock;
-    Product.image = image || findProduct.image;
+    findProduct.title = title || findProduct.title;
+    findProduct.description = description || findProduct.description;
+    findProduct.category = category || findProduct.category;
+    findProduct.brand = brand || findProduct.brand;
+    findProduct.price = price === "" ? 0  : price || findProduct.price;
+    findProduct.salePrice = salePrice === "" ? 0 : salePrice  || findProduct.salePrice;
+    findProduct.totalStock = totalStock || findProduct.totalStock;
+    findProduct.image = image || findProduct.image;
 
     await findProduct.save();
     res.status(201).json({
       success: true,
       data: findProduct,
     });
-
   } catch (error) {
     console.log(e);
     res.status(500).json({
@@ -130,20 +132,18 @@ const editProduct = async (req, res) => {
 
 const deleteProduct = async (req, res) => {
   try {
-
-    const {id} = req.params;
-    const product = await Product.findByIdAndUpdate(id)
-    if(!product) return res.status(404).json({
-      success : false,
-      message :"Product not found"
-    })
+    const { id } = req.params;
+    const product = await Product.findByIdAndUpdate(id);
+    if (!product)
+      return res.status(404).json({
+        success: false,
+        message: "Product not found",
+      });
 
     res.status(200).json({
-      success : true,
-      message : "Product deleted successfully"
-    })
-
-
+      success: true,
+      message: "Product deleted successfully",
+    });
   } catch (error) {
     console.log(e);
     res.status(500).json({
@@ -153,4 +153,10 @@ const deleteProduct = async (req, res) => {
   }
 };
 
-export { handleImageUpload, addProduct, fetchAllProducts, editProduct, deleteProduct };
+export {
+  handleImageUpload,
+  addProduct,
+  fetchAllProducts,
+  editProduct,
+  deleteProduct,
+};

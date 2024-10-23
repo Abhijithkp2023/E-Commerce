@@ -20,7 +20,6 @@ const AuthLogin = () => {
   const onSubmit = (e) => {
     e.preventDefault();
     dispatch(loginUser(formData)).then((data) => {
-      console.log(data.payload.success)
       if (data.payload.success) {
         toast({
           title: data?.payload?.message,
