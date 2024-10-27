@@ -68,7 +68,6 @@ const adminProductsSlice = createSlice({
         state.isLoading = true;
       })
       .addCase(fetchAllProducts.fulfilled, (state, action) => {
-        console.log(action.payload)
         state.isLoading = false;
         state.productList = action.payload.data;
       })
