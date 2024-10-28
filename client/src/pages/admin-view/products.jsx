@@ -6,6 +6,7 @@ import { addProductFormElements } from "@/config";
 import { useToast } from "@/hooks/use-toast";
 import {
   addNewProducts,
+  deleteProduct,
   editProduct,
   fetchAllProducts,
 } from "@/store/products-slice";
@@ -42,19 +43,16 @@ const AdminProducts = () => {
     currentEditedId !== null
       ? dispatch(
           editProduct({
-            id : currentEditedId,
+            id: currentEditedId,
             formData,
           })
         ).then((data) => {
-          console.log(data, "edit");
-
-          if(data?.payload?.success){
-            dispatch(fetchAllProducts())
-            setFormData(initialFormData)
-            setCreateOpenProductsDialog(false)
-            setCurrentEditedId(null)
+          if (data?.payload?.success) {
+            dispatch(fetchAllProducts());
+            setFormData(initialFormData);
+            setCreateOpenProductsDialog(false);
+            setCurrentEditedId(null);
           }
-
         })
       : dispatch(
           addNewProducts({
@@ -62,7 +60,6 @@ const AdminProducts = () => {
             image: uploadedImageUrl,
           })
         ).then((data) => {
-          console.log(data);
           if (data.payload.success) {
             dispatch(fetchAllProducts());
             setCreateOpenProductsDialog(false);
@@ -75,11 +72,24 @@ const AdminProducts = () => {
         });
   };
 
+  const handleDelete = (getCurrentProductId) => {
+    dispatch(deleteProduct(getCurrentProductId)).then((data) => {
+      if (data?.payload.success) {
+        dispatch(fetchAllProducts());
+      }
+    });
+  };
+
+  const isFormValid = () => {
+    return Object.keys(formData)
+      .map((key) => formData[key] !== "")
+      .every((item) => item);
+  };
+
   useEffect(() => {
     dispatch(fetchAllProducts());
   }, [dispatch]);
 
-  console.log(productList, "product list")
 
   return (
     <Fragment>
@@ -97,6 +107,7 @@ const AdminProducts = () => {
                 setCurrentEditedId={setCurrentEditedId}
                 key={productItem?._id}
                 product={productItem}
+                handleDelete={handleDelete}
               />
             ))
           : null}
@@ -110,7 +121,9 @@ const AdminProducts = () => {
         }}
       >
         <SheetContent side="right" className="overflow-auto">
-          <SheetHeader>{currentEditedId !== null ? "Edit product" : "Add new product"}</SheetHeader>
+          <SheetHeader>
+            {currentEditedId !== null ? "Edit product" : "Add new product"}
+          </SheetHeader>
           <ProductImageUpload
             setImageLoadingState={setImageLoadingState}
             imageLoadingState={imageLoadingState}
@@ -127,6 +140,7 @@ const AdminProducts = () => {
               setFormData={setFormData}
               buttonText={currentEditedId !== null ? "Edit" : "Add"}
               formControls={addProductFormElements}
+              isBtnDisabled={!isFormValid()}
             />
           </div>
         </SheetContent>
